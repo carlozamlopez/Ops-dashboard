@@ -1,16 +1,26 @@
 # ROADMAP — OPS Dashboard
 
-## Fase 0 — Base del proyecto
-- [x] README
-- [ ] Estructura de carpetas
-- [ ] .gitignore
-- [ ] Documentación: HLD, HADR, FINOPS, ADR
+## ✅ FASE 0 — Base del proyecto (COMPLETADA)
+- [x] README con roles del equipo
+- [x] Estructura de carpetas enterprise
+- [x] .gitignore (Terraform, Python, secretos)
+- [x] HLD — Arquitectura de alto nivel
+- [x] ADR-001 — App Gateway vs Load Balancer
+- [x] HADR — HA, DR, RTO/RPO, Runbook
+- [x] FINOPS — Presupuesto + optimización 12 meses
+- [x] Todo en GitHub con flujo PR enterprise (9 PRs)
+- [x] Branch main protegida con bypass Arch
 
-## Fase 1 — Docker local
-- [ ] Dockerfile frontend
-- [ ] Dockerfile API
-- [ ] Docker Compose completo
-- [ ] Verificar comunicación frontend → API → MySQL
+## ✅ FASE 1 — Docker local (COMPLETADA)
+- [x] Dockerfile frontend (multi-stage, non-root user)
+- [x] Dockerfile API (multi-stage, non-root user)
+- [x] Docker Compose completo con healthchecks
+- [x] Flask API: /health, /api/metrics, /api/metrics/summary
+- [x] Flask Frontend: dashboard visual + proxy a API
+- [x] MySQL init.sql con schema y datos de prueba
+- [x] Verificado: docker compose up funciona
+- [x] Verificado: API health db:connected
+- [x] Verificado: Dashboard mostrando métricas reales
 
 ## Fase 2 — Terraform infra
 - [ ] Módulo networking
