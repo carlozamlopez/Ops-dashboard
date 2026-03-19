@@ -1,0 +1,29 @@
+# ── Terraform ─────────────────────────────────
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+!*.tfvars.example
+.terraform.lock.hcl
+crash.log
+
+# ── Python ────────────────────────────────────
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+venv/
+.venv/
+
+# ── Secretos — NUNCA en Git ───────────────────
+*.pem
+*.key
+secrets/
+
+# ── OS ────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── VS Code ───────────────────────────────────
+.vscode/settings.json
