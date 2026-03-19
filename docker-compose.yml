@@ -1,0 +1,75 @@
+version: '3.9'
+
+# OPS Dashboard — Entorno de desarrollo local
+# Uso: docker compose up --build
+# Frontend: http://localhost:3000
+# API:      http://localhost:5000/api/health
+
+services:
+
+  frontend:
+    build:
+      context: ./services/frontend
+      dockerfile: Dockerfile
+    container_name: ops-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - FLASK_ENV=development
+      - API_URL=http://api:5000
+    depends_on:
+      - api
+    networks:
+      - ops-network
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./services/api
+      dockerfile: Dockerfile
+    container_name: ops-api
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_NAME=opsdb
+      - DB_USER=opsuser
+      - DB_PASSWORD=devpassword123
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - ops-network
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: ops-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootdevpass
+      - MYSQL_DATABASE=opsdb
+      - MYSQL_USER=opsuser
+      - MYSQL_PASSWORD=devpassword123
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./services/api/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ops-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+networks:
+  ops-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
