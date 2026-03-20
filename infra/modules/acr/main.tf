@@ -3,7 +3,7 @@
 # AKS tiene permiso de pull via managed identity
 
 resource "azurerm_container_registry" "main" {
-  name = "acr-${var.prefijo}-${var.ambiente}"
+  name = "acr${var.prefijo}${var.ambiente}"
   resource_group_name = var.resource_group_name
   location = var.location
   sku = var.sku
