@@ -22,7 +22,7 @@ variable "aks_principal_id" {
 variable "secrets" {
   description = "Mapa de secretos a crear en Key Vault"
   type        = map(string)
-  sensitive   = true
+  #sensitive   = true *!Los valores individuales ya son sensitivos por ser secretos de Key Vault*!
   default     = {}
 }
 

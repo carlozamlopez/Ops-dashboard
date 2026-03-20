@@ -9,7 +9,7 @@ output "mysql_fqdn" {
 
 output "mysql_private_ip" {
   description = "IP privada asignada por el Private Endpoint"
-  value       = azurerm_private_endpoint.mysql.private_service_connection[0].private_ip_address
+  value       = azurerm_private_endpoint.main.private_service_connection[0].private_ip_address
 }
 
 output "database_name" {
