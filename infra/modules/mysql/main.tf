@@ -10,8 +10,8 @@ resource "azurerm_mysql_flexible_server" "main" {
   administrator_password = var.db_admin_password
   sku_name               = var.sku_name
   version                = "8.0.21"
-  zone                   = "1"
-
+  #zone                   = "1"
+  
   dynamic "high_availability" {
     for_each = var.enable_ha ? [1] : []
     content {
@@ -28,6 +28,7 @@ resource "azurerm_mysql_flexible_server" "main" {
 # ── Private Endpoint ───────────────────────────────────────────
 
 resource "azurerm_private_endpoint" "main" {
+  count               = var.enable_private_endpoint ? 1 : 0
   name                  = "pe-mysql-${var.prefijo}-${var.ambiente}"
   resource_group_name   = var.resource_group_name
   location              = var.location
@@ -42,7 +43,7 @@ resource "azurerm_private_endpoint" "main" {
 
   private_dns_zone_group {
     name = "mysql-dns-zone-group"
-    private_dns_zone_ids = [azurerm_private_dns_zone.mysql.id]
+    private_dns_zone_ids = [azurerm_private_dns_zone.mysql[0].id]
   }
 
   tags = var.tags
@@ -52,15 +53,17 @@ resource "azurerm_private_endpoint" "main" {
 # Sin esto el FQDN de MySQL resuelve a IP pública
 # Con esto resuelve a la IP privada del Private Endpoint
 resource "azurerm_private_dns_zone" "mysql" {
+  count               = var.enable_private_endpoint ? 1 : 0
   name                = "privatelink.mysql.database.azure.com"
   resource_group_name = var.resource_group_name
   tags                = var.tags
 }
 
 resource "azurerm_private_dns_zone_virtual_network_link" "mysql" {
+  count                 = var.enable_private_endpoint ? 1 : 0
   name                  = "dns-link-mysql-${var.prefijo}-${var.ambiente}"
   resource_group_name   = var.resource_group_name
-  private_dns_zone_name = azurerm_private_dns_zone.mysql.name
+  private_dns_zone_name = azurerm_private_dns_zone.mysql[0].name
   virtual_network_id    = var.vnet_id
   registration_enabled  = false
   tags                  = var.tags

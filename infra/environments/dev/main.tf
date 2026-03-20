@@ -20,7 +20,11 @@ terraform {
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
   subscription_id = var.subscription_id
 }
 
@@ -53,21 +57,22 @@ module "acr" {
 }
 
 # ── Módulo: MySQL ──────────────────────────────────────────────
-module "mysql" {
-  source              = "../../modules/mysql"
-  prefijo             = var.prefijo
-  ambiente            = var.ambiente
-  location            = var.location
-  resource_group_name = module.networking.resource_group_name
-  vnet_id             = module.networking.vnet_id
-  subnet_mysql_id     = module.networking.subnet_mysql_id
+# module "mysql" {
+#   source              = "../../modules/mysql"
+#   prefijo             = var.prefijo
+#   ambiente            = var.ambiente
+#   location            = var.location
+#   resource_group_name = module.networking.resource_group_name
+#   vnet_id             = module.networking.vnet_id
+#   subnet_mysql_id     = module.networking.subnet_mysql_id
 
-  db_admin_password     = var.db_admin_password
-  sku_name              = "B_Standard_B1ms"
-  backup_retention_days = 7
-  enable_ha             = false
-  tags                  = local.tags_extra
-}
+#   db_admin_password       = var.db_admin_password
+#   sku_name                = "B_Standard_B1ms"
+#   backup_retention_days   = 7
+#   enable_ha               = false
+#   enable_private_endpoint = false
+#   tags                    = local.tags_extra
+# }
 
 # ── Módulo: App Gateway ───────────────────────────────────────
 module "appgateway" {
@@ -97,7 +102,7 @@ module "aks" {
 
   node_count          = 1
   node_vm_sku         = "Standard_DC2s_v3"
-  availability_zones  = ["1"]
+  availability_zones  = []
   tags                = local.tags_extra
 }
 
@@ -111,9 +116,10 @@ module "keyvault" {
   aks_principal_id    = module.aks.kubelet_identity_object_id
 
   secrets = {
-    "db-password"   = var.db_admin_password
-    "db-host"       = module.mysql.mysql_fqdn
-    "db-name"       = module.mysql.database_name
+     # MySQL secrets — descomentar cuando MySQL esté activo
+    #"db-password"   = var.db_admin_password
+    #"db-host"       = module.mysql.mysql_fqdn
+    #"db-name"       = module.mysql.database_name
     "db-admin-user" = "opsadmin"
   }
   tags = local.tags_extra

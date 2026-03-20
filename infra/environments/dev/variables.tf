@@ -14,7 +14,7 @@ variable "ambiente" {
 
 variable "location" {
   type    = string
-  default = "eastus"
+  default = "westus"
 }
 
 variable "db_admin_password" {

@@ -54,6 +54,12 @@ variable "enable_ha" {
   default     = false
 }
 
+variable "enable_private_endpoint" {
+  description = "Habilitar Private Endpoint. Requiere SKU General Purpose o superior. Dev usa false con Burstable."
+  type        = bool
+  default     = true
+}
+
 variable "tags" {
   type    = map(string)
   default = {}
