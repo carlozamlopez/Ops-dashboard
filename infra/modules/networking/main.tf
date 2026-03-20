@@ -62,10 +62,10 @@ resource "azurerm_subnet" "management" {
 # ── NSGs ────────────────────────────────────────────────────────
 
 resource "azurerm_network_security_group" "aks" {
-    name = "nsg-aks-${var.prefijo}-${var.ambiente}"
-    resource_group_name = azurerm_resource_group.main.name
-    location = azurerm_resource_group.main.location
-    tags = local.tags
+  name = "nsg-aks-${var.prefijo}-${var.ambiente}"
+  resource_group_name = azurerm_resource_group.main.name
+  location = azurerm_resource_group.main.location
+  tags = local.tags
 
   security_rule {
     name                       = "Allow-AppGW-Inbound"
