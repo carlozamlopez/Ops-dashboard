@@ -22,12 +22,18 @@
 - [x] Verificado: API health db:connected
 - [x] Verificado: Dashboard mostrando métricas reales
 
-## Fase 2 — Terraform infra
-- [ ] Módulo networking
-- [ ] Módulo MySQL + Private Endpoint
-- [ ] Módulo AKS
-- [ ] Módulo App Gateway + AGIC
-- [ ] Módulo Key Vault
+## ✅ FASE 2 — Terraform infra (COMPLETADA)
+- [x] Módulo networking: VNet, 4 subnets, NSGs, Log Analytics
+- [x] Módulo ACR: Container Registry + AcrPull role
+- [x] Módulo MySQL: Flexible Server + Private Endpoint opcional
+- [x] Módulo AKS: Cluster + AGIC + zonas + monitoreo
+- [x] Módulo AppGateway: App Gateway + WAF + lifecycle AGIC
+- [x] Módulo KeyVault: RBAC + CSI Driver + secretos
+- [x] Environment dev: orquestador completo
+- [x] terraform plan: 28 recursos sin errores
+- [x] terraform apply: exitoso en westus
+- [x] terraform destroy: limpio
+- [x] API con modo in-memory cuando no hay DB
 
 ## Fase 3 — Kubernetes
 - [ ] Namespaces
