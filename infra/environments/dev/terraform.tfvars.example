@@ -1,0 +1,8 @@
+# Copia este archivo a terraform.tfvars y llena los valores
+# NUNCA commitear terraform.tfvars (está en .gitignore)
+
+subscription_id   = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+prefijo           = "opsdashboard"
+ambiente          = "dev"
+location          = "eastus"
+db_admin_password = "REEMPLAZAR-CON-PASSWORD-SEGURO"
