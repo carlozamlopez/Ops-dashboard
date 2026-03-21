@@ -39,27 +39,31 @@
 - [x] Namespace: ops-dashboard
 - [x] Deployment + Service: API (ClusterIP port 5000)
 - [x] Deployment + Service: Frontend (NodePort port 30000)
-- [x] Kustomize base + overlay dev
+- [x] Kustomize base + overlays por ambiente (base/api, base/frontend, overlays/dev)
 - [x] Probes: liveness y readiness en ambos servicios
 - [x] Resource limits y requests definidos
-- [x] Verificado: kubectl apply -k k8s/base exitoso
-- [x] Verificado: pods Running 1/1 en Docker Desktop K8s v1.34.3
+- [x] imagePullPolicy: Always para forzar pull desde ACR en cloud
+- [x] Verificado: pods Running 1/1 en Docker Desktop K8s local
+- [x] Verificado: pods Running 1/1 en AKS westus
 - [x] Verificado: Dashboard accesible via kubectl port-forward
 - [x] Extensión Kubernetes en VS Code configurada
-- [ ] Ingress AGIC (pendiente — requiere AKS en Azure)
-- [ ] PodDisruptionBudget (pendiente — prod)
 
-## Fase 4 — CI/CD GitHub Actions
-- [ ] Pipeline CI: lint + build + push ACR
-- [ ] Pipeline CD dev: automático en merge a develop
-- [ ] Pipeline CD staging: automático en merge a staging
-- [ ] Pipeline CD prod: aprobación manual
+## ✅ FASE 4 — CI/CD GitHub Actions (COMPLETADA)
+- [x] Pipeline CI: build + push imágenes al ACR con tag commit SHA
+- [x] Pipeline CD dev: deploy automático a AKS al mergear a develop
+- [x] Kustomize override de imagen ACR por ambiente (overlays/dev)
+- [x] kubectl apply -k crea namespace y deployments automáticamente
+- [x] Verify rollout: API y Frontend con timeout 300s
+- [x] Secretos GitHub: AZURE_CREDENTIALS, ACR_NAME, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
+- [x] Verificado: CI verde — imágenes en ACR con SHA del commit
+- [x] Verificado: CD verde — pods Running 1/1 en AKS westus end-to-end
+- [x] 18+ PRs mergeados — flujo enterprise completo
 
-## Fase 5 — App Gateway + AGIC
-- [ ] terraform apply en Azure
+## Fase 5 — App Gateway + Acceso público
+- [ ] Configurar Ingress AGIC en AKS
 - [ ] Verificar routing / → frontend
 - [ ] Verificar routing /api/* → API
-- [ ] Acceder desde browser con IP pública
+- [ ] Acceder desde browser con IP pública del App Gateway
 
 ## Fase 6 — Frontend visual
 - [ ] Dashboard con métricas en tiempo real
