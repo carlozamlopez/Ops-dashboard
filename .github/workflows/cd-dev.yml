@@ -1,0 +1,96 @@
+# ── CD Pipeline DEV — OPS Dashboard ───────────────────────────
+# Se ejecuta automáticamente al mergear a develop
+# Despliega las nuevas imágenes al cluster AKS dev
+
+name: CD — Deploy to DEV
+
+on:
+  push:
+    branches:
+      - develop
+
+env:
+  ACR_LOGIN_SERVER: ${{ secrets.ACR_NAME }}.azurecr.io
+  RESOURCE_GROUP: rg-opsdashboard-dev
+  AKS_CLUSTER: aks-opsdashboard-dev
+  NAMESPACE: ops-dashboard
+
+jobs:
+  deploy-dev:
+    name: Deploy to AKS DEV
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar el código
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Login a Azure con el Service Principal
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # 3. Conectar kubectl al cluster AKS
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.AKS_CLUSTER }} \
+            --overwrite-existing
+
+      # 3. Login al ACR
+      - name: Login to ACR
+        uses: Azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_NAME }}.azurecr.io
+          username: ${{ secrets.AZURE_CLIENT_ID }}
+          password: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+      # 5. Build y push con tag del commit
+      - name: Build and push API image
+        run: |
+          docker build -t ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-api:${{ github.sha }} \
+            ./services/api
+          docker push ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-api:${{ github.sha }}
+
+      - name: Build and push Frontend image
+        run: |
+          docker build -t ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-frontend:${{ github.sha }} \
+            ./services/frontend
+          docker push ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-frontend:${{ github.sha }}
+
+      # 6. Actualizar imagen en los deployments
+      - name: Update API deployment image
+        run: |
+          kubectl set image deployment/api \
+            api=${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-api:${{ github.sha }} \
+            -n ${{ env.NAMESPACE }}
+
+      - name: Update Frontend deployment image
+        run: |
+          kubectl set image deployment/frontend \
+            frontend=${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-frontend:${{ github.sha }} \
+            -n ${{ env.NAMESPACE }}
+
+      # 7. Verificar que el rollout fue exitoso
+      - name: Verify API rollout
+        run: |
+          kubectl rollout status deployment/api \
+            -n ${{ env.NAMESPACE }} \
+            --timeout=300s
+
+      - name: Verify Frontend rollout
+        run: |
+          kubectl rollout status deployment/frontend \
+            -n ${{ env.NAMESPACE }} \
+            --timeout=300s
+
+      # 8. Resumen del deploy
+      - name: Summary
+        run: |
+          echo "## ✅ Deploy to DEV completado" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- API: ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-api:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend: ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-frontend:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Cluster: ${{ env.AKS_CLUSTER }}" >> $GITHUB_STEP_SUMMARY
