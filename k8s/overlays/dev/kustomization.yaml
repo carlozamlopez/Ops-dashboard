@@ -7,10 +7,8 @@ namespace: ops-dashboard
 
 resources:
   - namespace.yaml
-  - ../../base/api/deployment.yaml
-  - ../../base/api/service.yaml
-  - ../../base/frontend/deployment.yaml
-  - ../../base/frontend/service.yaml
+  - ../../base/api/
+  - ../../base/frontend/
 
 labels:
   - pairs:
