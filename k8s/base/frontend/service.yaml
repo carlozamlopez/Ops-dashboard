@@ -1,0 +1,20 @@
+# Service — expone el frontend dentro del cluster
+# NodePort permite acceder desde fuera del cluster en desarrollo
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: ops-dashboard
+  labels:
+    app: frontend
+    project: ops-dashboard
+spec:
+  selector:
+    app: frontend
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+      nodePort: 30000    # puerto accesible desde tu laptop
+      protocol: TCP
+  type: NodePort  # accesible desde fuera del cluster en dev
