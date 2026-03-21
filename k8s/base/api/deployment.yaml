@@ -4,7 +4,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api
-  namespace: ops-dashboard
   labels:
     app: api
     project: ops-dashboard
@@ -21,7 +20,7 @@ spec:
       containers:
         - name: api
           image: ops-dashboard-api:latest
-          imagePullPolicy: IfNotPresent   # usa imagen local, no Docker Hub
+          imagePullPolicy: Always   
           ports:
             - containerPort: 5000
           env:

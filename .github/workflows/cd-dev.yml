@@ -39,7 +39,7 @@ jobs:
             --name ${{ env.AKS_CLUSTER }} \
             --overwrite-existing
 
-      # 3. Login al ACR
+      # 4. Login al ACR
       - name: Login to ACR
         uses: Azure/docker-login@v1
         with:
@@ -60,18 +60,14 @@ jobs:
             ./services/frontend
           docker push ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-frontend:${{ github.sha }}
 
-      # 6. Actualizar imagen en los deployments
-      - name: Update API deployment image
+      # 6. Deploy — aplica manifests con imagen del ACR actualizada al commit SHA
+      - name: Deploy to AKS
         run: |
-          kubectl set image deployment/api \
-            api=${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-api:${{ github.sha }} \
-            -n ${{ env.NAMESPACE }}
-
-      - name: Update Frontend deployment image
-        run: |
-          kubectl set image deployment/frontend \
-            frontend=${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-frontend:${{ github.sha }} \
-            -n ${{ env.NAMESPACE }}
+          cd k8s/overlays/dev
+          kustomize edit set image \
+            ops-dashboard-api=${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-api:${{ github.sha }} \
+            ops-dashboard-frontend=${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-frontend:${{ github.sha }}
+          kubectl apply -k .
 
       # 7. Verificar que el rollout fue exitoso
       - name: Verify API rollout
