@@ -35,32 +35,40 @@
 - [x] terraform destroy: limpio
 - [x] API con modo in-memory cuando no hay DB
 
-## Fase 3 — Kubernetes
-- [ ] Namespaces
-- [ ] Deployments base
-- [ ] Services
-- [ ] Ingress AGIC
-- [ ] PodDisruptionBudget (HADR)
-- [ ] Kustomize overlays dev/staging/prod
+## ✅ FASE 3 — Kubernetes (COMPLETADA)
+- [x] Namespace: ops-dashboard
+- [x] Deployment + Service: API (ClusterIP port 5000)
+- [x] Deployment + Service: Frontend (NodePort port 30000)
+- [x] Kustomize base + overlay dev
+- [x] Probes: liveness y readiness en ambos servicios
+- [x] Resource limits y requests definidos
+- [x] Verificado: kubectl apply -k k8s/base exitoso
+- [x] Verificado: pods Running 1/1 en Docker Desktop K8s v1.34.3
+- [x] Verificado: Dashboard accesible via kubectl port-forward
+- [x] Extensión Kubernetes en VS Code configurada
+- [ ] Ingress AGIC (pendiente — requiere AKS en Azure)
+- [ ] PodDisruptionBudget (pendiente — prod)
 
 ## Fase 4 — CI/CD GitHub Actions
-- [ ] Pipeline CI (lint + build + push ACR)
-- [ ] Pipeline CD dev (automático)
-- [ ] Pipeline CD staging (automático)
-- [ ] Pipeline CD prod (aprobación manual)
+- [ ] Pipeline CI: lint + build + push ACR
+- [ ] Pipeline CD dev: automático en merge a develop
+- [ ] Pipeline CD staging: automático en merge a staging
+- [ ] Pipeline CD prod: aprobación manual
 
 ## Fase 5 — App Gateway + AGIC
+- [ ] terraform apply en Azure
 - [ ] Verificar routing / → frontend
 - [ ] Verificar routing /api/* → API
-- [ ] Acceder desde browser
+- [ ] Acceder desde browser con IP pública
 
 ## Fase 6 — Frontend visual
-- [ ] Dashboard con métricas
+- [ ] Dashboard con métricas en tiempo real
 - [ ] Gráficas con Chart.js
-- [ ] Consumir API real
+- [ ] Consumir API real desde AKS
 
 ## Fase 7 — Monitoreo y cierre
 - [ ] Log Analytics conectado a AKS
-- [ ] Alertas básicas
+- [ ] Alertas básicas configuradas
 - [ ] LLD final
 - [ ] terraform destroy ordenado
+- [ ] Documentación final del proyecto
