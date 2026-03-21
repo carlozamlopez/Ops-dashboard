@@ -1,0 +1,63 @@
+# ── CI Pipeline — OPS Dashboard ───────────────────────────────
+# Se ejecuta en cada PR hacia develop, staging o main
+# Construye y sube las imágenes Docker al ACR de Azure
+# ── CI Pipeline — OPS Dashboard ───────────────────────────────
+# Se ejecuta en cada PR hacia develop, staging o main
+# Construye y sube las imágenes Docker al ACR de Azure
+
+name: CI — Build and Push to ACR
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - staging
+      - main
+
+env:
+  ACR_LOGIN_SERVER: ${{ secrets.ACR_NAME }}.azurecr.io
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar el código del PR
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Login a Azure con el Service Principal
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # 3. Login al ACR
+      - name: Login to ACR
+        uses: Azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_NAME }}.azurecr.io
+          username: ${{ secrets.AZURE_CLIENT_ID }}
+          password: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+      # 4. Construir y subir imagen API
+      - name: Build and push API image
+        run: |
+          docker build -t ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-api:${{ github.sha }} \
+            ./services/api
+          docker push ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-api:${{ github.sha }}
+
+      # 5. Construir y subir imagen Frontend
+      - name: Build and push Frontend image
+        run: |
+          docker build -t ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-frontend:${{ github.sha }} \
+            ./services/frontend
+          docker push ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-frontend:${{ github.sha }}
+
+      # 6. Reportar las imágenes construidas
+      - name: Summary
+        run: |
+          echo "## ✅ Images pushed to ACR" >> $GITHUB_STEP_SUMMARY
+          echo "- API: ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-api:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Frontend: ${{ env.ACR_LOGIN_SERVER }}/ops-dashboard-frontend:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY

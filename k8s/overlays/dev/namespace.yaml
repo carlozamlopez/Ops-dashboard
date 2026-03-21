@@ -1,0 +1,10 @@
+# Namespace — aislamiento lógico del proyecto
+# Todos los recursos del ops-dashboard viven aquí
+# En AKS esto separa el proyecto de otros tenants del cluster
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ops-dashboard
+  labels:
+    project: ops-dashboard
+    managed-by: kubectl

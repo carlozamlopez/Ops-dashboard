@@ -1,0 +1,25 @@
+# Kustomization — orquestador de manifests para el ambiente dev
+# kubectl apply -k k8s/overlays/dev aplica todos los recursos en orden
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ops-dashboard
+
+resources:
+  - namespace.yaml
+  - ../../base/api/
+  - ../../base/frontend/
+
+labels:
+  - pairs:
+      environment: dev
+      managed-by: kustomize
+    includeSelectors: false
+
+images:
+  - name: ops-dashboard-api
+    newName: acropsdashboarddev.azurecr.io/ops-dashboard-api
+    newTag: latest
+  - name: ops-dashboard-frontend
+    newName: acropsdashboarddev.azurecr.io/ops-dashboard-frontend
+    newTag: latest
