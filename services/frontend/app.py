@@ -22,7 +22,7 @@ def health():
     return jsonify({"status": "ok", "service": "frontend"})
 
 
-@app.route("/api/proxy/metrics")
+@app.route("/proxy/metrics")
 def proxy_metrics():
     """
     Proxy hacia la API.

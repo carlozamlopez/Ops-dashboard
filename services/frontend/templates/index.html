@@ -104,7 +104,7 @@
 <script>
     async function loadMetrics() {
         try {
-            const response = await fetch('/api/proxy/metrics');
+            const response = await fetch('/proxy/metrics');
             const data = await response.json();
 
             if (data.error) {
