@@ -9,6 +9,7 @@ resources:
   - namespace.yaml
   - ../../base/api/
   - ../../base/frontend/
+  - ingress.yaml
 
 labels:
   - pairs:
