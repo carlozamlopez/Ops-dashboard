@@ -57,18 +57,22 @@
 - [x] Secretos GitHub: AZURE_CREDENTIALS, ACR_NAME, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID
 - [x] Verificado: CI verde — imágenes en ACR con SHA del commit
 - [x] Verificado: CD verde — pods Running 1/1 en AKS westus end-to-end
-- [x] 18+ PRs mergeados — flujo enterprise completo
+- [x] 19+ PRs mergeados — flujo enterprise completo
 
-## Fase 5 — App Gateway + Acceso público
-- [ ] Configurar Ingress AGIC en AKS
-- [ ] Verificar routing / → frontend
-- [ ] Verificar routing /api/* → API
-- [ ] Acceder desde browser con IP pública del App Gateway
+## ✅ FASE 5 — App Gateway + Acceso público (COMPLETADA)
+- [x] Ingress AGIC configurado en AKS con ingressClassName azure-application-gateway
+- [x] AGIC permisos: Reader en RG, Contributor en AppGW, Network Contributor en subnet
+- [x] Routing / → frontend (puerto 3000)
+- [x] Routing /api/* → API (puerto 5000)
+- [x] Verificado: Dashboard accesible desde internet vía IP pública 20.237.243.94
+- [x] Fix proxy path /proxy/metrics para evitar conflicto con routing AGIC
 
-## Fase 6 — Frontend visual
-- [ ] Dashboard con métricas en tiempo real
-- [ ] Gráficas con Chart.js
-- [ ] Consumir API real desde AKS
+## ✅ FASE 6 — Frontend visual (COMPLETADA)
+- [x] Dashboard con métricas en tiempo real consumiendo API real desde AKS
+- [x] Cards de resumen por servicio (API, AKS, MySQL, Frontend)
+- [x] Tabla de detalle: promedio, máximo, mínimo, registros por servicio
+- [x] Auto-refresh cada 30 segundos
+- [ ] Gráficas con Chart.js (pendiente)
 
 ## Fase 7 — Monitoreo y cierre
 - [ ] Log Analytics conectado a AKS
